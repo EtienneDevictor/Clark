@@ -1,27 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const {
-  OK,
-  UNAUTHORIZED
-} = require('../../util/constants').STATUS_CODES;
+
+const { OK, UNAUTHORIZED } = require('../../util/constants').STATUS_CODES;
 const s3BucketKeys = require('../../config/config.json').S3Bucket;
 const printingS3Bucket = require('../../config/config.json').PrintingS3Bucket;
-const {
-  ACCOUNT_ID,
-  PAPER_PRINTING_QUEUE_NAME
-} = require('../../config/config.json').Queue;
+const { ACCOUNT_ID, PAPER_PRINTING_QUEUE_NAME } =
+  require('../../config/config.json').Queue;
 const {
   verifyToken,
-  checkIfTokenSent
+  checkIfTokenSent,
 } = require('../../util/token-verification');
 
 const AWS = require('aws-sdk');
-let creds = new
-AWS.Credentials(s3BucketKeys.AWSACCESSKEYID, s3BucketKeys.AWSSECRETKEY);
+//const { ApiResponse } = require('../../../src/APIFunctions/ApiResponses');
+let creds = new AWS.Credentials(
+  s3BucketKeys.AWSACCESSKEYID,
+  s3BucketKeys.AWSSECRETKEY
+);
 AWS.config.update({
   region: 'us-west-1',
   endpoint: 'https://s3.amazonaws.com',
-  credentials: creds
+  credentials: creds,
 });
 
 router.get('/healthCheck', (req, res) => {
@@ -33,11 +32,13 @@ router.post('/sendPrintRequest', async (req, res) => {
   if (!checkIfTokenSent(req)) {
     return res.sendStatus(UNAUTHORIZED);
   }
-  if (!await verifyToken(req.body.token)) {
+  if (!(await verifyToken(req.body.token))) {
     return res.sendStatus(UNAUTHORIZED);
   }
-  if (s3BucketKeys.AWSACCESSKEYID === 'NOT_SET'
-  && s3BucketKeys.AWSSECRETKEY === 'NOT_SET') {
+  if (
+    s3BucketKeys.AWSACCESSKEYID === 'NOT_SET' &&
+    s3BucketKeys.AWSSECRETKEY === 'NOT_SET'
+  ) {
     return res.sendStatus(OK);
   }
   const { raw, copies, pageRanges } = req.body;
@@ -49,9 +50,11 @@ router.post('/sendPrintRequest', async (req, res) => {
     Bucket: printingS3Bucket,
   };
 
-  const response = await s3.upload(params, function(err, data) {
-    if (err) throw err;
-  }).promise();
+  const response = await s3
+    .upload(params, function (err, data) {
+      if (err) throw err;
+    })
+    .promise();
 
   const sqs = new AWS.SQS({ apiVersion: '2012-11-05' });
 
@@ -65,7 +68,7 @@ router.post('/sendPrintRequest', async (req, res) => {
       copies: copies,
       pageRanges,
     }),
-    QueueUrl: `https://sqs.us-west-2.amazonaws.com/${accountId}/${queueName}`
+    QueueUrl: `https://sqs.us-west-2.amazonaws.com/${accountId}/${queueName}`,
   };
   sqs.sendMessage(sqsParams, (err, data) => {
     return res.sendStatus(OK);

@@ -29,6 +29,9 @@ import GoogleLoginDiscord from './Pages/SJSUDiscordBot/GoogleLogin.js';
 import DiscordSJSU from './Pages/DiscordSJSU/DiscordSJSU.js';
 import InventoryPage from './Pages/Inventory/InventoryPage.js';
 
+import AnimalPage from './Pages/Animals/Animals';
+import AnimalAdmin from './Pages/Animals/AnimalAdmin';
+
 export default function Routing({ appProps }) {
   const userIsAuthenticated = appProps.authenticated;
   const userIsMember =
@@ -123,7 +126,13 @@ export default function Routing({ appProps }) {
       path: '/inventory',
       allowedIf: userIsOfficerOrAdmin,
       redirect: '/login',
-      inAdminNavbar: true}
+      inAdminNavbar: true},
+    { Component: AnimalAdmin,
+      path: '/animal-admin',
+      allowedIf: userIsOfficerOrAdmin,
+      redirect: '/',
+      inAdminNavbar: true
+    },
   ];
   const signedOutRoutes = [
     { Component: Home, path: '/' },
@@ -131,7 +140,8 @@ export default function Routing({ appProps }) {
     { Component: OfficerDB, path: '/officerDB' },
     { Component: VerifyEmailPage, path: '/verify' },
     { Component: GoogleLoginDiscord, path: '/discordSJSU/LoginWithGoogle/:id'},
-    { Component: DiscordSJSU, path: '/discordSJSU'}
+    { Component: DiscordSJSU, path: '/discordSJSU'},
+    { Component: AnimalPage, path: '/animals'},
   ];
   return (
     <Router>

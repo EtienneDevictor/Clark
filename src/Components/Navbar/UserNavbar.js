@@ -19,13 +19,18 @@ import { membershipState } from '../../Enums';
 export default function UserNavBar(props) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
-  const unauthedRoutes = [{ title: 'About', route: '/#about' },
-    { title: 'Events', route: '/events' }];
+  const unauthedRoutes = [
+    { title: 'About', route: '/#about' },
+    { title: 'Events', route: '/events' },
+    { title: 'Animals', route: '/animals' },
+  ];
 
   const authedRoutes = [{ title: 'Printing', route: '/2DPrinting' }];
 
-  const authentication = [{ title: 'Sign Up', route: '/register' },
-    { title: 'Sign In', route: '/login' }];
+  const authentication = [
+    { title: 'Sign Up', route: '/register' },
+    { title: 'Sign In', route: '/login' },
+  ];
 
   const toggler = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -33,11 +38,15 @@ export default function UserNavBar(props) {
 
   return (
     <div className={'user-nav'}>
-      <Navbar expand='xl' className = "navbar">
+      <Navbar expand='xl' className='navbar'>
         <NavbarBrand href='/'>
           <div>
-            <img id='logo-image' src='favicon.ico'
-              alt={'sce-logo'} style={{ width: '70px' }} />
+            <img
+              id='logo-image'
+              src='favicon.ico'
+              alt={'sce-logo'}
+              style={{ width: '70px' }}
+            />
           </div>
         </NavbarBrand>
         <NavbarToggler tag='h1'>
@@ -48,11 +57,10 @@ export default function UserNavBar(props) {
               <span className='border'></span>
             </DropdownToggle>
             <DropdownMenu right>
-              {props.user && props.user.accessLevel >=
-                membershipState.MEMBER && (
-                <DropdownItem  className='dropdown-submenu drp-item'>
+              {props.user && props.user.accessLevel >= membershipState.MEMBER && (
+                <DropdownItem className='dropdown-submenu drp-item'>
                   <DropdownItem className='drp-item' id='btndrp-text'>
-                      Printing
+                    Printing
                   </DropdownItem>
                   <DropdownMenu className='drp-menu'>
                     {authedRoutes.map((link, index) => {
@@ -125,8 +133,8 @@ export default function UserNavBar(props) {
                     </DropdownItem>
                   </DropdownMenu>
                 </div>
-                // display sign in, sign up in hamburger if not logged in
               ) : (
+                // display sign in, sign up in hamburger if not logged in
                 <NavItem className='drp-item'>
                   {authentication.map((link, index) => {
                     return (
@@ -167,8 +175,7 @@ export default function UserNavBar(props) {
                       {props.user.firstName}
                     </DropdownToggle>
                     <DropdownMenu right>
-                      <DropdownItem className='drp-item'
-                        href='/profile'>
+                      <DropdownItem className='drp-item' href='/profile'>
                         Profile
                       </DropdownItem>
                       {/* Display admin if user is admin */}
@@ -207,45 +214,46 @@ export default function UserNavBar(props) {
               {unauthedRoutes.map((link, index) => {
                 return (
                   <NavItem key={index}>
-                    <NavLink id='navlink-text'
+                    <NavLink
+                      id='navlink-text'
                       className='routes'
-                      href={link.route}>
+                      href={link.route}
+                    >
                       {link.title}
                     </NavLink>
                   </NavItem>
                 );
               })}
               {/* Display printing in nav when logged in */}
-              {props.user && props.user.accessLevel >= membershipState.MEMBER
-                && (
-                  <UncontrolledDropdown nav inNavbar>
-                    <DropdownToggle
-                      className='authenticated-navlink'
-                      id='navlink-text'
-                      nav
-                      caret
-                    >
-                      Services
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      {authedRoutes.map((link, index) => {
-                        return (
-                          <DropdownItem
-                            key={index}
-                            className='drp-item'
-                            href={link.route}
-                          >
-                            {link.title}
-                          </DropdownItem>
-                        );
-                      })}
-                    </DropdownMenu>
-                  </UncontrolledDropdown>
-                )}
+              {props.user && props.user.accessLevel >= membershipState.MEMBER && (
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle
+                    className='authenticated-navlink'
+                    id='navlink-text'
+                    nav
+                    caret
+                  >
+                    Services
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    {authedRoutes.map((link, index) => {
+                      return (
+                        <DropdownItem
+                          key={index}
+                          className='drp-item'
+                          href={link.route}
+                        >
+                          {link.title}
+                        </DropdownItem>
+                      );
+                    })}
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              )}
             </div>
           </Nav>
         </Collapse>
       </Navbar>
-    </div >
+    </div>
   );
 }
