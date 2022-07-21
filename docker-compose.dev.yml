@@ -33,7 +33,6 @@ services:
       - ./api/peripheral_api:/app/peripheral_api
   sce-cloud-api:
     container_name: sce-cloud-api-dev
-    image: cloudapi:latest
     build:
       context: ./api
       dockerfile: ./cloud_api/Dockerfile.dev
