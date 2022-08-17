@@ -8,7 +8,6 @@ import {
   Collapse,
 } from 'reactstrap';
 import { membershipState } from '../../Enums';
-import DarkMode from './DarkMode';
 
 export default function AdminNavbar(props) {
   const [collapsed, setCollapsed] = useState(true);
@@ -30,9 +29,6 @@ export default function AdminNavbar(props) {
       <div id='admin-title'>
         <NavbarBrand href='/dashboard'>Admin Dashboard
         </NavbarBrand>
-        <div id='admin-toggler'>
-          <DarkMode />
-        </div>
       </div>
       <NavbarToggler
         onClick={() => setCollapsed(!collapsed)}

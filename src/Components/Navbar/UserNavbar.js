@@ -13,7 +13,6 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
-import DarkMode from './DarkMode';
 import { membershipState } from '../../Enums';
 
 export default function UserNavBar(props) {
