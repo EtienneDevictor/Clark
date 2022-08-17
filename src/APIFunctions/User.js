@@ -228,3 +228,14 @@ export async function connectToDiscord(email, token) {
   return status;
 }
 
+export async function getUserById(userID) {
+  let status = new UserApiResponse();
+  await axios.get(`${GENERAL_API_URL}/User/getUserById?id=${userID}`)
+    .then((res) => {
+      status.responseData = res.data;
+    })
+    .catch((err) => {
+      status.error = true;
+    });
+  return status;
+}
