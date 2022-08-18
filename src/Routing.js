@@ -27,6 +27,7 @@ import { membershipState } from './Enums';
 import GoogleLoginDiscord from './Pages/SJSUDiscordBot/GoogleLogin.js';
 import DiscordSJSU from './Pages/DiscordSJSU/DiscordSJSU.js';
 import UserManager from './Pages/UserManager/UserManager.js';
+import UserInfo from './Pages/UserManager/UserInfo.js';
 
 import AdminDashboard from './Pages/Profile/admin/AdminDashboard';
 
@@ -117,6 +118,13 @@ export default function Routing({ appProps }) {
     {
       Component: UserManager,
       path: '/user-manager',
+      allowedIf:userIsOfficerOrAdmin,
+      redirect: '/',
+      inAdminNavbar: true
+    },
+    {
+      Component: UserInfo,
+      path: '/user/edit/:id',
       allowedIf:userIsOfficerOrAdmin,
       redirect: '/',
       inAdminNavbar: true
