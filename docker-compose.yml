@@ -10,10 +10,12 @@ services:
   keep-ssh-tunnel-open:
     container_name: keep-ssh-tunnel-open
     build:
-      context: ./tunup
+      context: ./keep_ssh_tunnel_open
       dockerfile: ./Dockerfile
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      - RUST_LOG=info
   sce-peripheral-api:
     container_name: sce-peripheral-api
     build:
