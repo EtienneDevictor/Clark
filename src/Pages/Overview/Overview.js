@@ -27,8 +27,18 @@ export default class OverviewBoard extends Component {
     };
   }
 
+  tryParsingJsonFromUri() {
+    try {
+
+      const veryGhetto = this.props.location.search.split('=')[1]
+      console.log('parsed json in URI:', JSON.parse(decodeURIComponent(veryGhetto)))
+    } catch (e) {
+
+    }
+  }
+
   componentDidMount() {
-    console.log('wats up', this.props)
+    this.tryParsingJsonFromUri()
     if (this.props.user) {
       this.setState(
         {
@@ -44,7 +54,8 @@ export default class OverviewBoard extends Component {
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate', this.props)
+    // console.log('componentDidUpdate', this.props)
+    this.tryParsingJsonFromUri()
   }
 
   async callDatabase() {
@@ -176,7 +187,9 @@ export default class OverviewBoard extends Component {
             className='input-overview'
             placeholder="search by 'first name, last name, or email'"
             onChange={event => {
-              this.props.history.push("/user-manager", { state: 'sample data'}); 
+              const object = {someRandomField: event.target.value}
+              const encodedObject = encodeURIComponent(JSON.stringify(object))
+              this.props.history.push(`/user-manager?search=${encodedObject}`, { state: 'sample data'}); 
               this.updateQuery(event.target.value);
             }}
           />
