@@ -28,6 +28,23 @@ export async function getAllUsers(token) {
   return status;
 }
 
+export async function getUserData(query, token) {
+  let status = new UserApiResponse();
+  await axios
+    .get(GENERAL_API_URL + `/User/usersForPagination/${query}`, {
+      params: {
+        token: token
+      }
+    })
+    .then(result => {
+      status.responseData = result.data;
+    })
+    .catch(() => {
+      status.error = true;
+    });
+  return status;
+}
+
 export async function getCountAllUsers(query) {
   let status = new UserApiResponse();
   await axios

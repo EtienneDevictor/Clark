@@ -30,6 +30,80 @@ const discordConnection = require('../util/discord-connection');
 const discordRedirectUri = process.env.DISCORD_REDIRECT_URI ||
   'http://localhost:8080/api/user/callback';
 
+router.get('/usersForPagination', async (req, res) => {
+  if (req.body.token === undefined) req.body.token = req.query.token;
+  if (!checkIfTokenSent(req)) {
+    return res.sendStatus(FORBIDDEN);
+  } else if (!checkIfTokenValid(req)) {
+    return res.sendStatus(UNAUTHORIZED);
+  }
+  try {
+    const limit = parseInt(req.query.usersPerPage);
+    const page = parseInt(req.query.page) - 1;
+    const search = req.query.search;
+    let filter = req.query.filter;
+
+    const toSort = {
+      'First Name': 'firstName',
+      'Last Name': 'lastName',
+      'Join Date': { joinDate: -1 },
+      'Membership Type': { accessLevel: -1 }
+    };
+    const sort = toSort[req.query.sort];
+
+    const membershipStateArray = [
+      membershipState.PENDING,
+      membershipState.ALUMNI,
+      membershipState.OFFICER,
+      membershipState.ADMIN
+    ];
+
+    const filterStringToNumber = {
+      Admin: [3],
+      Alumni: [0.5],
+      Officer: [2],
+      Pending: [-1],
+    };
+
+    filter === 'All'
+      ? (filter = [...membershipStateArray])
+      : filter = filterStringToNumber[req.query.filter];
+
+    const users = await User.find({
+      $or:
+        [
+          { 'firstName': { '$regex': search, '$options': 'i' } },
+          { 'lastName': { '$regex': search, '$options': 'i' } },
+          { 'email': { '$regex': search, '$options': 'i' } }
+        ]
+    })
+      .where('accessLevel')
+      .in([...filter])
+      .skip(page * limit)
+      .sort(sort)
+      .limit(limit);
+
+    const count = await User.find({
+      $or:
+        [
+          { 'firstName': { '$regex': search, '$options': 'i' } },
+          { 'lastName': { '$regex': search, '$options': 'i' } },
+          { 'email': { '$regex': search, '$options': 'i' } }
+        ]
+    }).countDocuments()
+      .where('accessLevel')
+      .in([...filter]);
+
+    const response = {
+      users,
+      count
+    };
+    res.status(OK).json(response);
+  } catch (err) {
+    res.sendStatus(BAD_REQUEST);
+  }
+});
+
 router.get('/countAllUsers', async (req, res) => {
   if (!checkIfTokenSent(req)) {
     return res.sendStatus(FORBIDDEN);
@@ -39,6 +113,7 @@ router.get('/countAllUsers', async (req, res) => {
     return res.sendStatus(UNAUTHORIZED);
   }
   const search = req.query.search;
+  let filter = req.query.filter;
   let status = OK;
   const count = await User.find({
     $or:
@@ -51,7 +126,7 @@ router.get('/countAllUsers', async (req, res) => {
     if (error) {
       status = BAD_REQUEST;
     } else if (result == 0) {
-      status = NOT_FOUND;
+      // status = NOT_FOUND;
     }
   }).countDocuments();
   const response = {
@@ -71,7 +146,9 @@ router.get('/currentUsers', async (req, res) => {
   const search = req.query.search;
   const page = parseInt(req.query.page) - 1;
   const limit = parseInt(req.query.u);
+  let filter = req.query.filter;
   let status = OK;
+
   const users = await User.find({
     $or:
       [
@@ -83,7 +160,7 @@ router.get('/currentUsers', async (req, res) => {
     if (error) {
       status = BAD_REQUEST;
     } else if (result.length == 0) {
-      status = NOT_FOUND;
+      // status = NOT_FOUND;
     }
   })
     .skip(page * limit)

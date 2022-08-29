@@ -39,6 +39,7 @@ const {
   restoreDiscordAPIMock,
   initializeDiscordAPIMock
 } = require('../util/mocks/DiscordApiFunction');
+const { resolvePreset } = require('@babel/core');
 
 chai.should();
 chai.use(chaiHttp);
@@ -371,72 +372,145 @@ describe('User', () => {
     });
   });
 
-  describe('/GET countAllUsers', () => {
-    it('Should return statusCode 200 if count >= 1', async () => {
+  describe('/GET usersForPagination', () => {
+    it('Should return statusCode 200 if correct # of users are returned in ' +
+      'correct order & filter, and correct count is returned', async () => {
       setTokenStatus(true);
-      const query = '?search=a';
-      const result = await test.sendGetRequestWithToken(
-        token, `/api/User/countAllUsers${query}`);
-      expect(result).to.have.status(OK);
-      result.body.count.should.be.greaterThanOrEqual(0);
+
+      // creating dummy users
+      const newUsers = [4, 3, 2, 1, 0];
+      for (const number of newUsers) {
+        await test.sendPostRequest('/api/Auth/register', {
+          email: `new${number}@s.s`,
+          password: 'Passw0rd',
+          firstName: `new${number}`,
+          lastName: `user${number}`
+        });
+      }
+
+      const queryFirstPage = '?page=1&usersPerPage=5&search=&filter=Pending' +
+        '&sort=Join%20Date';
+      const firstPage = await test.sendGetRequestWithToken(
+        token, `/api/User/usersForPagination${queryFirstPage}`);
+      const querySecondPage = '?page=2&usersPerPage=5&search=&filter=Pending' +
+        '&sort=Join%20Date';
+      const secondPage = await test.sendGetRequestWithToken(
+        token, `/api/User/usersForPagination${querySecondPage}`);
+      expect(firstPage).to.have.status(OK);
+      expect(firstPage).to.be.json;
+      expect(secondPage).to.have.status(OK);
+      expect(secondPage).to.be.json;
+      newUsers.forEach((number) => {
+        firstPage.body.users[number].email.should.equal(`new${number}@s.s`);
+        firstPage.body.users[number].firstName.should.equal(`new${number}`);
+        firstPage.body.users[number].lastName.should.equal(`user${number}`);
+      });
+      secondPage.body.users[0].email.should.equal('a@b.c');
+      secondPage.body.users[0].firstName.should.equal('pinkUnicorn');
+      secondPage.body.users[0].lastName.should.equal('last-name');
+      secondPage.body.users[0].discordID.should.equal('0987654321');
+      firstPage.body.users.length.should.equal(5);
+      secondPage.body.users.length.should.equal(1);
+      firstPage.body.count.should.equal(6);
+      secondPage.body.count.should.equal(6);
     });
-    it('Should return statusCode 404 if count == 0', async () => {
+    it('Should return statusCode 200 with count 0 when query' +
+      'results in zero users', async () => {
       setTokenStatus(true);
-      const query = '?search=ab%cd%de';
+      const query = '?page=1&u=5&search=asdfzxcv&filter=Admin&sort=Join%20Date';
       const result = await test.sendGetRequestWithToken(
-        token, `/api/User/countAllUsers${query}`);
-      expect(result).to.have.status(NOT_FOUND);
-      result.body.count.should.be.equal(0);
+        token, `/api/User/usersForPagination${query}`);
+      expect(result).to.have.status(OK);
+      expect(result).to.be.json;
+      result.body.users.length.should.equal(0);
+      result.body.count.should.equal(0);
     });
     it('Should return statusCode 403 if no token is passed in', async () => {
-      const query = '?search=a';
+      const query = '?page=1&u=5&search=&filter=All&sort=Join%20Date';
       const result = await test.sendGetRequest(
-        `/api/User/countAllUsers${query}`);
+        `/api/User/usersForPagination${query}`);
       expect(result).to.have.status(FORBIDDEN);
     });
     it('Should return statusCode 401 if an invalid ' +
       'token was passed in', async () => {
       setTokenStatus(false);
-      const query = '?search=a';
+      const query = '';
       const result = await test.sendGetRequestWithToken(
-        token, `/api/User/countAllUsers${query}`);
+        token, `/api/User/usersForPagination${query}`);
       expect(result).to.have.status(UNAUTHORIZED);
     });
   });
 
-  describe('/GET currentUsers', () => {
-    it('Should return statusCode 200 if users exist', async () => {
-      setTokenStatus(true);
-      const query = '?search=&page=1&u=5';
-      const result = await test.sendGetRequestWithToken(
-        token, `/api/User/currentUsers${query}`);
-      expect(result).to.have.status(OK);
-      expect(result).to.be.json;
-      result.body.users.length.should.equal(1);
-    });
-    it('Should return statusCode 404 if no users exist', async () => {
-      setTokenStatus(true);
-      const query = '?search=ab%cd%de';
-      const result = await test.sendGetRequestWithToken(
-        token, `/api/User/currentUsers${query}`);
-      expect(result).to.have.status(NOT_FOUND);
-      result.body.users.length.should.equal(0);
-    });
-    it('Should return statusCode 403 if no token is passed in', async () => {
-      const query = '?search=';
-      const result = await test.sendGetRequest(
-        `/api/User/currentUsers${query}`);
-      expect(result).to.have.status(FORBIDDEN);
-    });
-    it('Should return statusCode 401 if an invalid ' +
-      'token was passed in', async () => {
-      setTokenStatus(false);
-      const query = '?search=';
-      const result = await test.sendGetRequestWithToken(
-        token, `/api/User/currentUsers${query}`);
-      expect(result).to.have.status(UNAUTHORIZED);
-    });
-  });
+  // describe('/GET countAllUsers', () => {
+  //   it('Should return statusCode 200 if count >= 1', async () => {
+  //     setTokenStatus(true);
+  //     const query = '?search=a';
+  //     const result = await test.sendGetRequestWithToken(
+  //       token, `/api/User/countAllUsers${query}`);
+  //     expect(result).to.have.status(OK);
+  //     result.body.count.should.be.greaterThanOrEqual(0);
+  //   });
+  //   it('Should return statusCode 404 if count == 0', async () => {
+  //     setTokenStatus(true);
+  //     const query = '?search=ab%cd%de';
+  //     const result = await test.sendGetRequestWithToken(
+  //       token, `/api/User/countAllUsers${query}`);
+  //     expect(result).to.have.status(NOT_FOUND);
+  //     result.body.count.should.be.equal(0);
+  //   });
+  //   it('Should return statusCode 403 if no token is passed in', async () => {
+  //     const query = '?search=a';
+  //     const result = await test.sendGetRequest(
+  //       `/api/User/countAllUsers${query}`);
+  //     expect(result).to.have.status(FORBIDDEN);
+  //   });
+  //   it('Should return statusCode 401 if an invalid ' +
+  //     'token was passed in', async () => {
+  //     setTokenStatus(false);
+  //     const query = '?search=a';
+  //     const result = await test.sendGetRequestWithToken(
+  //       token, `/api/User/countAllUsers${query}`);
+  //     expect(result).to.have.status(UNAUTHORIZED);
+  //   });
+  // });
+
+  // describe('/GET currentUsers', () => {
+  //   it('Should return statusCode 200 if users exist', async () => {
+  //     setTokenStatus(true);
+  //     const query = '?search=&page=1&u=5';
+  //     const result = await test.sendGetRequestWithToken(
+  //       token, `/api/User/currentUsers${query}`);
+  //     expect(result).to.have.status(OK);
+  //     expect(result).to.be.json;
+  //     result.body.users[0].email.should.be('a@b.c');
+  //     result.body.users[0].firstName.should.equal('pinkUnicorn');
+  //     result.body.users[0].lastName.should.equal('last-name');
+  //     result.body.users[0].discordID.should.equal('0987654321');
+  //     result.body.users.length.should.equal(1);
+  //   });
+  //   it('Should return statusCode 404 if no users exist', async () => {
+  //     setTokenStatus(true);
+  //     const query = '?search=ab%cd%de';
+  //     const result = await test.sendGetRequestWithToken(
+  //       token, `/api/User/currentUsers${query}`);
+  //     expect(result).to.have.status(NOT_FOUND);
+  //     result.body.users.length.should.equal(0);
+  //   });
+  //   it('Should return statusCode 403 if no token is passed in', async () => {
+  //     const query = '?search=';
+  //     const result = await test.sendGetRequest(
+  //       `/api/User/currentUsers${query}`);
+  //     expect(result).to.have.status(FORBIDDEN);
+  //   });
+  //   it('Should return statusCode 401 if an invalid ' +
+  //     'token was passed in', async () => {
+  //     setTokenStatus(false);
+  //     const query = '?search=';
+  //     const result = await test.sendGetRequestWithToken(
+  //       token, `/api/User/currentUsers${query}`);
+  //     expect(result).to.have.status(UNAUTHORIZED);
+  //   });
+  // });
 
   describe('/POST delete', () => {
     it('Should return statusCode 403 if no token is passed in', async () => {
