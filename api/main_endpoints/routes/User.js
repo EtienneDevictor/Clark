@@ -146,9 +146,7 @@ router.get('/currentUsers', async (req, res) => {
   const search = req.query.search;
   const page = parseInt(req.query.page) - 1;
   const limit = parseInt(req.query.u);
-  let filter = req.query.filter;
   let status = OK;
-
   const users = await User.find({
     $or:
       [
@@ -160,7 +158,7 @@ router.get('/currentUsers', async (req, res) => {
     if (error) {
       status = BAD_REQUEST;
     } else if (result.length == 0) {
-      // status = NOT_FOUND;
+      status = NOT_FOUND;
     }
   })
     .skip(page * limit)
@@ -443,6 +441,29 @@ router.post('/connectToDiscord', function(req, res) {
       `&redirect_uri=${encodeURIComponent(discordRedirectUri)}` +
       `&state=${email}&response_type=code&scope=identify`
     );
+});
+
+router.post('/getUserById', async (req, res) => {
+  if (!checkIfTokenSent(req)) {
+    return res.sendStatus(FORBIDDEN);
+  } else if (!checkIfTokenValid(req, (
+    membershipState.OFFICER
+  ))) {
+    return res.sendStatus(UNAUTHORIZED);
+  }
+  User.findOne({ _id: req.body.userID}, (err, result) => {
+    if (err) {
+      res.status(BAD_REQUEST).send({ message: 'Bad Request.' });
+    }
+
+    if (!result) {
+      return res.sendStatus(NOT_FOUND);
+    }
+
+    const { password, ...omittedPassword } = result._doc;
+
+    return res.status(OK).json(omittedPassword);
+  });
 });
 
 module.exports = router;
