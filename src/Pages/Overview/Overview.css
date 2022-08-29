@@ -1,15 +1,37 @@
-.name {
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  overflow-wrap: initial;
+.OverviewBoard {
+  text-align: center;
+  margin: 0%;
 }
 
-.layout {
+.flexbox-container-user {
+  background-color: #212529;
+  min-height: 94vh;
+  text-align: center;
+  position: relative;
+}
+
+.user-name {
+  /* max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: initial; */
+  font-size: 20px;
+}
+
+#user-manager-table {
+  background-color: #212529;
+}
+
+.toolbar {
+  display: inline-flex;
+  padding-block: 20px;
+}
+
+/* .layout {
   padding-top: 70px;
-  padding-left: 30px;
-  margin: 10px auto;
-  width: 800px;
+  padding-left: 0px;
+  margin: 0px auto;
+  width: 100%;
 }
 
 .header-jumbo {
@@ -31,13 +53,12 @@
   min-width: 700px;
   overflow: auto;
   min-width: 500px;
-  
 }
 
 .content-table thead tr {
   background-color: #3a5f7f;
   color: #ffffff;
-  text-align: left;
+  text-align: center;
   font-weight: bold;
 }
 
@@ -50,6 +71,7 @@ thead.td {
   overflow-wrap: break-word;
   word-wrap: break-word;
   padding: 12px 15px;
+  width: 100%;
 }
 
 .content-table tbody tr {
@@ -58,18 +80,32 @@ thead.td {
 
 .content-table tbody tr:nth-of-type(even) {
   background-color: #f3f3f3;
-}
+}  */
 
 .input-overview {
   width: 100%;
   padding: 12px 20px;
-  margin: 8px 0px;
+  margin: 0px 0px;
   display: inline-block;
   border-radius: 4px;
   box-sizing: border-box;
   initial-letter-align: left;
   font-size: smaller;
   font-style: italic;
+}
+
+.input-overview {
+  width: 750px;
+  height: 40px;
+  border-radius: 0.5rem;
+  font-size: 16px;
+  display: inline;
+}
+
+.search-row {
+  display: inline-flex;
+  padding-inline: 5px;
+  margin-top: 1em;
 }
 
 .submit-button {
@@ -119,15 +155,18 @@ thead.td {
   animation: reverse;
 }
 
-.flexbox-container-user{
+/* .flexbox-container-user{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   flex-flow: wrap;
-}
+  background-color: #212529;
+  height: 100vh;
+} */
 
 #search-tag {
   display: inline;
+  color: white;
 }
 
 #view-email-button {
@@ -142,10 +181,101 @@ thead.td {
 }
 
 #users-header {
-  color: black;
+  color: white;
+  text-align: center;
 }
 
-@media screen and (min-width: 0px) and (max-width: 300px) {
+#users-body {
+  text-align: center;
+  background-color: #212529;
+}
+
+.active-page-button {
+  align-items: center;
+  background-color: #688cc4;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  fill: #000;
+  font-family: Inter,sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  height: 30px;
+  justify-content: center;
+  letter-spacing: -.8px;
+  line-height: 24px;
+  max-width: 20px;
+  outline: 0;
+  padding: 0 15px;
+  text-align: center;
+  text-decoration: none;
+  transition: all .3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  border-radius: 0.5em;
+}
+
+.nonactive-page-button {
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  color: #000;
+  cursor: pointer;
+  display: inline-flex;
+  fill: #000;
+  font-family: Inter,sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  height: 30px;
+  justify-content: center;
+  letter-spacing: -.8px;
+  line-height: 24px;
+  max-width: 20px;
+  outline: 0;
+  padding: 0 15px;
+  text-align: center;
+  text-decoration: none;
+  transition: all .3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  border-radius: 0.5em;
+}
+
+.user-page-numbers {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: transparent;
+  height: 4em;
+  overflow: hidden;
+}
+
+.user-row {
+  padding: 0;
+}
+
+.user-row-item {
+  vertical-align: middle; 
+  padding: 2px !important;
+}
+
+.user-dropdown {
+  padding: 0px;
+  background: #fff !important;
+  box-shadow: 3px 3px 10px 6px rgba(0, 0, 0, 0.06);
+  font-weight: bold;
+  border-radius: 0.875rem;
+  height: auto;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* @media screen and (min-width: 0px) and (max-width: 300px) {
   .layout {
     margin-left: 130%;
   }
@@ -174,4 +304,4 @@ thead.td {
     padding-top: 70px;
     height: 100%;
   }
-}
+} */

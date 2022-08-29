@@ -30,20 +30,22 @@ export default function OverviewProfile(props) {
     return bool ? svg.checkMark() : svg.xMark();
   }
   return (
-    <tr>
-      <td>
-        <div className='name'>{formatFirstAndLastName(props.user)}</div>
+    <tr className='user-row'>
+      <td className='user-row-item'>
+        <div className='user-name'>{formatFirstAndLastName(props.user)}</div>
       </td>
 
-      <td>{props.user.doorCode}</td>
+      <td className='user-row-item'>{props.user.doorCode}</td>
 
-      <td>{props.user.pagesPrinted}/30</td>
+      <td className='user-row-item'>{props.user.pagesPrinted}/30</td>
 
-      <td>{mark(props.user.emailVerified)}</td>
+      <td className='user-row-item'>{mark(props.user.emailVerified)}</td>
 
-      <td>{enums.membershipStateToString(props.user.accessLevel)}</td>
+      <td className='user-row-item'>
+        {enums.membershipStateToString(props.user.accessLevel)}
+      </td>
 
-      <td>
+      <td className='user-row-item'>
         <button
           className='overview-icon'
           onClick={() => {
@@ -54,7 +56,7 @@ export default function OverviewProfile(props) {
         </button>
       </td>
 
-      <td>
+      <td className='user-row-item'>
         <button
           className='overview-icon'
           onClick={() => {
@@ -69,11 +71,11 @@ export default function OverviewProfile(props) {
         isOpen={toggle}
         toggle={() => {
           setToggle(!toggle);
-          props.updateQuery();
+          // props.updateQuery();
         }}
       >
         {svg.cancelEditSymbol(() => {
-          props.updateQuery();
+          // props.updateQuery();
           setToggle(!toggle);
         })}
         <InfoCard updateUserState={props.updateUserState}
