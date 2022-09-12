@@ -13,12 +13,13 @@ let GENERAL_API_URL = process.env.REACT_APP_GENERAL_API_URL
  */
 export async function getAllUsers(token) {
   let status = new UserApiResponse();
+  const headers = {
+    'Authorization': token,
+  };
   await axios
-    // get all user!
     .post(GENERAL_API_URL + '/User/users', {
-      // don't need email
       token
-    })
+    }, { headers })
     .then(result => {
       status.responseData = result.data;
     })

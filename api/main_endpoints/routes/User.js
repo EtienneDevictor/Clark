@@ -193,6 +193,7 @@ router.post('/search', function(req, res) {
 
 // Search for all members
 router.post('/users', function(req, res) {
+  console.log(req.headers, 'owie')
   if (!checkIfTokenSent(req)) {
     return res.sendStatus(FORBIDDEN);
   } else if (!checkIfTokenValid(req)) {
