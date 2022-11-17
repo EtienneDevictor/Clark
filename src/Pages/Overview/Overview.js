@@ -106,7 +106,8 @@ export default class OverviewBoard extends Component {
   async deleteUser(user) {
     const deleteIDResponse = await deleteUserByID(
       user._id,
-      this.state.authToken
+      this.state.authToken,
+      user.email
     );
     if (!deleteIDResponse.error) {
       if (user._id === this.state.currentUser) {
