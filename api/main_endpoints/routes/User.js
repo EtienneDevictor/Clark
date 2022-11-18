@@ -141,7 +141,7 @@ router.post('/delete', (req, res) => {
 
       res.status(BAD_REQUEST).send({ message: 'Bad Request.' });
     }
-    
+
     if (user.n < 1) {
       res.status(NOT_FOUND).send({ message: 'User not found.' });
     } else {
