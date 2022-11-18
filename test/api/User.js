@@ -509,7 +509,7 @@ describe('User', () => {
 
     it('Should return statusCode 404 if no user was found', async () => {
       const user = {
-        _id : 'invalid ID',
+        _id: '63142b88a13c29e00b22d1f6',
         token: token
       };
       setTokenStatus(true);
