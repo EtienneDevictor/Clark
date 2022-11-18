@@ -489,7 +489,7 @@ describe('User', () => {
   describe('/POST delete', () => {
     it('Should return statusCode 403 if no token is passed in', async () => {
       const user = {
-        _id : id,
+        _id : id
       };
       const result = await test.sendPostRequest(
         '/api/User/delete', user);
@@ -499,7 +499,7 @@ describe('User', () => {
     it('Should return statusCode 403 if an invalid ' +
       'token was passed in', async () => {
       const user = {
-        _id : id,
+        _id: id,
         token: 'Invalid token'
       };
       const result = await test.sendPostRequest(
@@ -509,7 +509,7 @@ describe('User', () => {
 
     it('Should return statusCode 404 if no user was found', async () => {
       const user = {
-        _id : id,
+        _id : 'invalid ID',
         token: token
       };
       setTokenStatus(true);
