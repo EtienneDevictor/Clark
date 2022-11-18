@@ -521,7 +521,7 @@ describe('User', () => {
     it('Should return statusCode 200 and a message ' +
       'if a user was deleted', async () => {
       const user = {
-        email: 'd@e.f',
+        _id : id,
         token: token
       };
       setTokenStatus(true);
