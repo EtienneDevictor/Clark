@@ -23,17 +23,26 @@ router.get('/countAllUsers', async (req, res) => {
   if (!checkIfTokenValid(req, membershipState.OFFICER)) {
     return res.sendStatus(UNAUTHORIZED);
   }
-  const { search } = req.query;
+  const search = req.query.search;
   let status = OK;
-  try {
-    const count = await User.countDocuments({ });
-    console.log({count})
-    res.status(status).json({ count });
-  } catch (error) {
-    console.error(error);
-    status = BAD_REQUEST;
-    res.sendStatus(status);
-  }
+  const count = await User.find({
+    $or:
+      [
+        { 'firstName': { '$regex': search, '$options': 'i' } },
+        { 'lastName': { '$regex': search, '$options': 'i' } },
+        { 'email': { '$regex': search, '$options': 'i' } }
+      ]
+  }, function(error, result) {
+    if (error) {
+      status = BAD_REQUEST;
+    } else if (result == 0) {
+      status = NOT_FOUND;
+    }
+  }).countDocuments();
+  const response = {
+    count
+  };
+  res.status(status).json(response);
 });
 
 router.get('/currentUsers', async (req, res) => {
@@ -44,25 +53,30 @@ router.get('/currentUsers', async (req, res) => {
   if (!checkIfTokenValid(req, membershipState.OFFICER)) {
     return res.sendStatus(UNAUTHORIZED);
   }
-  const { search, page, u } = req.query;
+  const search = req.query.search;
+  const page = parseInt(req.query.page) - 1;
+  const limit = parseInt(req.query.u);
   let status = OK;
-  try {
-    const limit = parseInt(u);
-    const users = await User.find({
-      $or: [
+  const users = await User.find({
+    $or:
+      [
         { 'firstName': { '$regex': search, '$options': 'i' } },
         { 'lastName': { '$regex': search, '$options': 'i' } },
         { 'email': { '$regex': search, '$options': 'i' } }
       ]
-    })
-      .skip((parseInt(page) - 1) * limit)
-      .limit(limit);
-    res.status(status).json({ users });
-  } catch (error) {
-    console.error(error);
-    status = BAD_REQUEST;
-    res.sendStatus(status);
-  }
+  }, function(error, result) {
+    if (error) {
+      status = BAD_REQUEST;
+    } else if (result.length == 0) {
+      status = NOT_FOUND;
+    }
+  })
+    .skip(page * limit)
+    .limit(limit);
+  const response = {
+    users
+  };
+  res.status(status).json(response);
 });
 
 router.post('/checkIfUserExists', async (req, res) => {
