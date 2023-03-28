@@ -10,7 +10,6 @@ import {
   Button
 } from 'reactstrap';
 import { membershipState } from '../../Enums';
-import Header from '../../Components/Header/Header';
 
 export default class OverviewBoard extends Component {
   constructor(props) {
@@ -21,9 +20,6 @@ export default class OverviewBoard extends Component {
       toggle: false,
       currentQueryType: 'All',
       queryTypes: ['All', 'Pending', 'Officer', 'Admin', 'Alumni']
-    };
-    this.headerProps = {
-      title: 'User Manager'
     };
   }
 
@@ -44,8 +40,6 @@ export default class OverviewBoard extends Component {
 
   async callDatabase() {
     const apiResponse = await getAllUsers(this.state.authToken);
-    // console.log(apiResponse);
-
     if (!apiResponse.error) this.setState({ users: apiResponse.responseData });
   }
 
@@ -134,12 +128,9 @@ export default class OverviewBoard extends Component {
 
   render() {
     return (
-      <div className='flexbox-container'>
-        <br>
-        </br>
-        <br>
-        </br>
+      <div className='flexbox-container user-manager-bg'>
         <div className='layout'>
+          <h1 id='user-manager-header'>User Manager</h1>
           <h6 id='search-tag'>Search </h6>
           <ButtonDropdown
             isOpen={this.state.toggle}
@@ -162,18 +153,6 @@ export default class OverviewBoard extends Component {
               ))}
             </DropdownMenu>
           </ButtonDropdown>
-
-          <a href="/email-list">
-            <Button outline id="view-email-button">View Emails</Button>
-          </a>
-
-          <input
-            className='input-overview'
-            placeholder="search by 'first name, last name, or email'"
-            onChange={event => {
-              this.updateQuery(event.target.value);
-            }}
-          />
 
           <table className='content-table' id='users'>
             <thead>

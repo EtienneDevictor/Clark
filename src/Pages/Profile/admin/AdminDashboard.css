@@ -1,85 +1,111 @@
+/* Base styles */
 .admin-dashboard-bg {
-    background-color: #0C1E2F;
-    max-width: 100%;
-    min-height: 100vh;
+    background-color: black;
+    color: #fff;
+    height: 100vh;
+    overflow-y: scroll;
+  }
+  
+#admin-dashboard-header {
+  white-space: normal;
+  font-size: 3.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  padding-block: 120px;
 }
 
-#admin-box>div {
-    background-image: linear-gradient(to bottom right, #3E81A7, #3E81A5, #3E81A2, #3E81A1, #3E81A0);
-    border-radius: 0.8rem;
-    background-attachment: fixed;
-    word-wrap: break-word;
-    cursor: pointer;
-    min-height: 300px;
-    max-width: 100%;
-    text-align: center;
-    padding: 0;
-    color: #ffffff;
-    transition: all .3s ease-in;
-    min-height: 50px !important;
-    height: 20vh;
-    width: 20%;
-    align-items: center;
-    justify-content: center;
-    display: inline-flex;
-    margin: 2.5%;
-    border-color: black;
-    border-style: double;
-    flex-direction: row;
-}
-#admin-box>div:hover{
-    transform: scale(1.01); 
-}
-
-.block{
-    margin: 10%;
-}
-
-.flexbox-container{
-    height: 100%;
+  .flexbox-container {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-around;
-    flex-flow: wrap;
-} 
-@media screen and (min-width: 0px) and (max-width: 300px) {
-    .admin-dashboard-bg {
-        min-height: 110vh;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .block {
+    height: 100px;
+    width: 100%;
+  }
+  
+  #admin-box {
+    text-decoration: none;
+    color: #fff;
+  }
+  
+  .box {
+    text-align: center;
+    background-color: #016df9;
+    padding: 20px;
+    margin: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: none !important;
+    border-radius: 15px !important;
+  }
+  
+  .box:hover {
+    transform: translateY(-5px);
+    box-shadow: 5px 5px 10px rgb(144, 144, 144) !important;
+  }
+  
+  #icon {
+    display: block;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  #inner-text-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    position: relative;
+  }
+  
+  #inner-text-top b {
+    font-size: 24px;
+    margin-right: 10px;
+  }
+  
+  #value-span {
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
+    font-size: 18px;
+  }
+  
+  /* Header styles */
+  header {
+    background-color: #283c6c !important;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 32px;
+    margin: 0;
+  }
+  
+  header span {
+    display: block;
+    margin-top: 10px;
+    font-size: 18px;
+  }
+  
+  /* Responsive styles */
+  @media only screen and (max-width: 768px) {
+    .flexbox-container {
+      flex-direction: column;
+      justify-content: center;
+      padding: 0;
     }
-    #admin-box>div{
-        width: 35%;
-        margin: 6.5%;
+  
+    .box {
+      width: 80%;
+      margin: 10px;
     }
-    #inner-text-top {
-        font-size: 1.45rem;
-      }
-}
-
-@media screen and (min-width: 300px) and (max-width: 375px) {
-    #admin-box>div{
-        width: 39.5%;
-        margin: 4.5%;
-    }
-    #inner-text-top {
-        font-size: 1.65rem;
-      }
-}
-
-@media screen and (min-width: 377px) and (max-width: 487px) {
-    #admin-box>div{
-        width: 35%;
-        margin: 7.5%;
-    }
-    #inner-text-top {
-        font-size: 1.5rem;
-      }
-}
-
-
-@media screen and (min-width: 487px) and (max-width: 1200px) {
-    #admin-box>div{
-        width: 39.5%;
-        margin: 4.5%;
-    }
-
-}
+  }
+  
